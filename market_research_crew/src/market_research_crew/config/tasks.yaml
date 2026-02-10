@@ -1,17 +1,26 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    Research the company with domain {company_domain}.
+    Collect the following information:
+    - Company overview
+    - Products and services
+    - Target market
+    - Recent news
+    - Key competitors
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
+    A structured research summary covering the company background,
+    offerings, market position, competitors, and recent developments.
   agent: researcher
 
-reporting_task:
+analysis_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Using the research results, create a strategic market research report
+    for the company at {company_domain}.
+    The report must include:
+    - Executive Summary
+    - SWOT Analysis
+    - Strategic Recommendations
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A complete strategic market research report in Markdown format.
+  agent: analyst
+  output_file: output/market_research_report.md

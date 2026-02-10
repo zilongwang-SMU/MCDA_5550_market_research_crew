@@ -1,29 +1,30 @@
 #!/usr/bin/env python
 import sys
 import warnings
-
 from datetime import datetime
 
 from market_research_crew.crew import MarketResearchCrew
 
+
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
 
 def run():
     """
-    Run the crew.
+    Run the crew locally.
     """
+    company_domain = input("Enter company domain (e.g., salesforce.com): ").strip()
+
+    # Inputs must match variables used in YAML, e.g. {company_domain}
     inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+        "company_domain": company_domain,
+        # keep only if your YAML uses {current_year}
+        "current_year": str(datetime.now().year),
     }
 
     try:
         MarketResearchCrew().crew().kickoff(inputs=inputs)
+        print("Done! Check output/market_research_report.md")
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
@@ -32,15 +33,22 @@ def train():
     """
     Train the crew for a given number of iterations.
     """
-    inputs = {
-        "topic": "AI LLMs",
-        'current_year': str(datetime.now().year)
-    }
-    try:
-        MarketResearchCrew().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
+    company_domain = input("Enter company domain (e.g., salesforce.com): ").strip()
 
+    inputs = {
+        "company_domain": company_domain,
+        "current_year": str(datetime.now().year),
+    }
+
+    try:
+        MarketResearchCrew().crew().train(
+            n_iterations=int(sys.argv[1]),
+            filename=sys.argv[2],
+            inputs=inputs
+        )
     except Exception as e:
         raise Exception(f"An error occurred while training the crew: {e}")
+
 
 def replay():
     """
@@ -48,24 +56,30 @@ def replay():
     """
     try:
         MarketResearchCrew().crew().replay(task_id=sys.argv[1])
-
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
+
 
 def test():
     """
     Test the crew execution and returns the results.
     """
+    company_domain = input("Enter company domain (e.g., salesforce.com): ").strip()
+
     inputs = {
-        "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
+        "company_domain": company_domain,
+        "current_year": str(datetime.now().year),
     }
 
     try:
-        MarketResearchCrew().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
-
+        MarketResearchCrew().crew().test(
+            n_iterations=int(sys.argv[1]),
+            eval_llm=sys.argv[2],
+            inputs=inputs
+        )
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
+
 
 def run_with_trigger():
     """
@@ -81,10 +95,11 @@ def run_with_trigger():
     except json.JSONDecodeError:
         raise Exception("Invalid JSON payload provided as argument")
 
+    # If using triggers, allow payload to provide the domain; otherwise default to empty
     inputs = {
         "crewai_trigger_payload": trigger_payload,
-        "topic": "",
-        "current_year": ""
+        "company_domain": trigger_payload.get("company_domain", ""),
+        "current_year": str(datetime.now().year),
     }
 
     try:
@@ -92,3 +107,6 @@ def run_with_trigger():
         return result
     except Exception as e:
         raise Exception(f"An error occurred while running the crew with trigger: {e}")
+
+if __name__ == "__main__":
+    run()
